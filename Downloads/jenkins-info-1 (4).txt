@@ -1,0 +1,338 @@
+CICD:
+source : SCM
+build
+	CI
+deploy
+	CD
+
+CICD:
+	- AWS Managed: Codebuild ( buildspec.yml ) -> Codedeploy (appspec.yml) -> Codepipeline
+
+AWS CICD: Managed
+CodeCommit > CodeBuild > CodeDeploy > CodePipeline
+Github > CodeBuild > CodeDeploy > CodePipeline
+
+CodePipeline : Trigger
+	- Manual Run Release
+	- CloudWatch -> Event Trigger ( CodeCommit master > event > Target CodePipeline ) - Real Time Execution
+	- Poll SCM -> CodePipeline will poll your CodeCommit provider for changes after specific ( 2 hours ) - Near Real Time
+		- Current Run at 8AM : Commit-C1
+		- Current Run at 10AM : Check if Commit-C2 is available ( If available , Run CodePipeline ), If Commit-C2 is not available, wait for 2 hours
+	
+CodeDeploy -> Webserver
+	- dev-deployment-group
+	- prod-deployment-group
+
+CodeDeploy Agent Installation on Servers
+
+Continuous Integration : CodeCommit > CodeBuild 
+Continous Deployment : CodeCommit > CodeBuild > CodeDeploy > CodePipeline
+
+CodeBuild Environment Variables:
+	- CodeBuild Built in ENV Values
+		- CODEBUILD_BUILD_NUMBER
+		- AWS_REGION
+		- CODEBUILD_SRC_DIR
+	- User Defined Env Values that you pass during the Build Execution.
+		- Runtime User defined variable.
+		- Use them in buildspec.yml
+
+CodeBuild Execution Number:
+	- CODEBUILD_BUILD_NUMBER
+		- 1
+		- 2
+CodeDeploy Deployment ID:
+	- Deployment ID
+		- d-45671232
+CodePipeline:
+	- Execution ID
+		- 6358a9a8-79bc-4a53-9252-560dadcfa94f
+
+Execution of CodeBuild:
+	- Create a CB Project without source ( editor buildspec.yml ) ( SCM Tool is not integrated )
+	- Create a CB Project with source ( integrate CodeCommit/Github , builspec.yml file is stored in CodeCommit)
+
+- CodeBuild Job performs a git checkout of specific branch and runs the instructions written in the buildspec.yml.
+- Generate Success or Failure as a result.
+
+--------------------------------------------------------------------------------
+
+Open Source CICD:
+Jenkins : Not Managed.
+	- Provision a VM ( EC2, On-Premise )
+	- Installation , Configuration and Administration of Jenkins on a VM/EC2/Server
+	- SCM Integration ( Github, CodeCommit, Bitbucket etc)
+	- SCM Branch Checkout
+	- Build -> stages in pipeline
+	- Deploy -> Stages that will deploy artifacts.
+
+Managed CICD for Jenkins: Cloudbees -> Infra, OS -> managed by cloudbess provider
+
+Jenkins:
+Github > Jenkins Pipeline Job ( build and deployment ) > Webserver ( deploy war file )
+Jenkins Jobs
+	- Job Run ID
+	- Build Number
+		- #1
+		- #2
+		- #3
+	
+1. Freestyle Job
+	- Change a Job Configuration in Jenkins UI
+2. Pipeline Job
+	- Write a Jenkinsfile( Jenkins Syntax ( Groovy ) ) - code will be Github.
+	- Jenkinsfile -> Pipeline definitions for stage execution.
+
+Jenkins Environment Variables:
+	- Jenkins Built in ENV Values
+		- BUILD_NUMBER
+	- User Defined Env Values that you pass during the Build Execution
+
+github ( ssh url , https url )
+	- ssh url -> public
+Github -> Jenkins 
+
+Jenkins <- Github
+git pull git@github.com:cloudmlops/jenkins-sample.git
+Jenkins -> client ( private key ) -> Jenkins Credentials
+Github Account -> server ( public key )
+	- Github Account
+	- Github Repository
+
+Local Machine -> Github
+git clone git@github.com:cloudmlops/jenkins-sample.git
+Local Machine -> client ( id_rsa ( private key ) )
+Github Account -> server ( id_rsa.pub public key )
+
+Jenkinsfile 
+- Pipeline 
+	- stages
+		- stage('build')
+			- steps { commands }
+			- steps { commands }
+		- stage('post-build')
+			- steps { commands }
+			- steps { commands }
+
+Jenkins :
+- Using Plugins ( Git, Maven, SSH )
+
+Jenkins : Trigger
+	- Webhook -> Change a code in Github > github will send event patter json to Jenkins > Jenkins will start automically
+	- Poll SCM -> Pipeline will poll your CodeCommit provider for changes after specific
+
+
+Jenkins: Github/CodeCommit
+
+CodeBuild : CodeCommit /Github
+=============================================================
+aws s3 ls
+
+Interpretor: Python
+- app.py -> python app.py => Code Execution
+--------------------------------------
+#add.py
+def addition(a,b):
+	return a+b
+--------------------------------------
+#main.py
+import add
+print(add.addition(10,20))
+--------------------------------------
+# boto3.py
+-> ec2_list.py -> python3 ec2_list.py => machine in which you are running this code, should have boto3 installed as a python package ( pip )
+import boto3
+ec2_client = boto3.client('ec2')
+=====================================================
+
+Compiler:
+- Main.java > compile > Main.class ( machine level code ) > run the Main.class
+
+JRE -> Java Runtime Environment -> .class -> Run
+JDK -> Java Development Kit ( Development packages + JRE ) -> maven build and compilation
+
+javac -> compiling your .java code > generate a .class file
+java -> used to run the .class file
+
+Hello.java > javac Hello.java > Creates Hello.class > java Hello
+import com.test.Add
+import java.sql.*
+Add.java > javac Add.java > Creates Add.class > java Add
+
+Java is platform independent
+
+# Build
+1.Code Compilation [ Code(.java ) -> compiled -> .class ]
+2.Dependencies Installation( extra packages required for code that are imported ) build tool ( maven )
+- creates a target folder and copies all above files inside target directory
+3.create an artifact/archive file ( zip -> jar or war )
+	- war ) Java specific Web Pages ( JSP ( java version html ))
+	- jar ) when you only want to import functions without any UI code.
+pom.xml -> package dependency
+
+/opt/maven-3.8.4/mvn
+mvn clean install -f pom.xml
+
+Maven -> Build Tool
+
+Install : locally it creates target/java-sample.war
+/var/lib/jenkins
+/var/lib/jenkins/workspace/jenkins-job-name/target/java-sample.war
+/var/lib/jenkins/jobs/jenkins-job-name/1
+/var/lib/jenkins/jobs/jenkins-job-name/2
+
+Deploy, Copied over -> Tomcat webapps/
+Context Path : URL path where artifacts files are copied
+
+=======================
+Python :
+
+def addition(a,b):
+	return a+b
+	
+sum=addition(10,20)
+
+math_operations.py
+
+pip install boto3
+
+# addition.py
+import math_operations
+import boto3
+
+aws -> aws s3 ls
+python -> python add.py
+maven -> mvn clean install -f pom.xml
+
+#1 -> /var/lib/jenkins/workspace/jenkins-job-name/target/java-sample.war
+#2 -> remove the /var/lib/jenkins/workspace/jenkins-job-name/target
+	-> build your artifact war file /var/lib/jenkins/workspace/jenkins-job-name/target/java-sample.war
+ 
+docker build -t docker-image -f Dockerfile
+
+jdk -> code develop
+jre -> war ( .class )
+
+.java -> .class -> war ( .class ) -> webserver ( jre ) -> apache tomcat build on top of java
+
+mysql -h database-1.cgsel8pj8zsp.ap-south-1.rds.amazonaws.com -P 3306 -u admin -p
+
+1) AWS Console Login
+2) aws cli
+3) Programming SDKs
+	- python boto3
+	- java - java-aws-sdk
+
+https://ap-south-1.console.aws.amazon.com/systems-manager/session-manager/
+http://65.0.18.195:8080/java-tomcat-sample-deploy/
+
+Infrastructure Creation -> CloudFormation
+Application Deployment
+
+77  sudo wget https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
+78  ls
+79  ls
+80  sudo yum localinstall mysql57-community-release-el7-11.noarch.rpm
+81  sudo yum install mysql-community-server
+
+IAC Creation
+- CF templates:
+	- VPC
+	- Compute
+	- DB resources
+- Codebuild -> CI -> cf cli deployment -> dev/qa/prod stack
+- Jenkins -> CI -> cf cli deployment -> dev/qa/prod stack
+
+Application Depployment
+- Jenkins/AWS CICD Jobs ( deploy artifacts to servers )
+
+
+Dockerfile
+docker login
+docker build -> docker installed and running on that server
+- creates image locally
+- tag the image with ecr repo URI
+- docker push ecr repo
+
+aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 082923708139.dkr.ecr.ap-south-1.amazonaws.com
+
+CodeCommit
+	docker_ecr_push.sh
+	Dockerfile
+	buildspec.yml
+
+CodeBuild
+
+IAC Automation with CodeBuild
+buildspec.yml
+scripts/ec2_create.sh
+templates/ec2.yml
+
+Any CICD Job:
+1) Manually do a ad-hoc Run
+2) Schedule the Run ( Cron Expression : * * * * *)
+3) Event Based ( Any change in git branch )
+
+Managed CICD
+1) Ad-Hoc - Start the Pipeline
+2) CloudWatch Event Schedule Run
+3) CloudWatch Event on Source Event of CodeCommit 
+
+
+---------------------
+Jenkins Pipeline:
+configure the pipeline with username and password:
+- Add username and password in jenkins pipeline script -> NOT Recommended
+- Add username and password in Credentials in Jenkins and access the Credentials in Script ->
+
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'This is Build Stage.'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'This is Test Stage.'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'This is Deploy Stage.'
+            }
+        }
+    }
+}
+----------------------
+printenv
+pwd
+id
+
+echo "User has selected $ENV_CHOICE"
+echo "User has selected $PROD_BOOL for Prod Environment"
+
+AWS CICD
+CodeCommit -> CodeBuild -> CodeDeploy ( Read Artifacts from S3) Revision File -> EC2 Instances
+appspec.yml -> target : /var/www/html/
+
+Java Code Base ( Github ) -> Artifact File ( Packaged Version of your source code ), ( Jenkins CI ) -> .war -> Tomcat Webserver
+----------------------------
+Python 
+import boto3
+s3 = boto3.client('s3')
+
+- Create a FreeStyle Job:
+Input parameter to take the build number from already deployed job (jenkins-maven-build-deploy-pipeline)
+- Deploy to container plugin 
+
+/var/lib/jenkins/jobs/jenkins-maven-build-deploy-pipeline/$build_input/archive/java-tomcat-sample/target/java-tomcat-maven-example.war
+
+docker build -t apache2-img .
+docker build -t apache2-img -f Dockerfile
+docker build -t apache2-img -f Dockerfile_Apache
+
+Jenkins user and admin tasks
+Docker Push pipeline
+Kubernetes

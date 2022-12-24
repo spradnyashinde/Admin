@@ -1,0 +1,23 @@
+CodeBuild Container:
+
+- CodeBuild Project
+	- Source configuration ( No Source )
+	- Build Environment ( Managed Image ( ubuntu ) )
+	- IAM Role
+	- Build Specification File ( buildspec.yml )
+	- Build Execution Logs ( CloudWatch Log Group )
+
+EC2 : AMI ( OS ) , Instance Type ( t2.micro , RAM, CPU )
+CodeBuild : Environment Image ( OS ) , Compute Type (
+
+codebuild compute environment:
+CodeBuild:
+	- IAM Role
+	- aws cli commands
+
+Lambda Function :
+IAM Role ( policy to publish sns message )
+	- lambda_handler.py
+		- import boto3
+		  sns = boto3.client('sns')
+CodeBuild will launch a container -> execute instructions written in buildspec.yml file -> destroy the container

@@ -1,0 +1,254 @@
+AWS , Linux, Python , AWS CICD, IAC CloudFormation, Ansible, Docker, Kubernetes
+
+L1:
+AWS and Linux
+VPC, S3, IAM, EC2, CloudWatch, CloudTrail, Athena, RDS, SNS, Lambda
+
+AWS Administrator Role.
+
+draw.io diagram : https://app.diagrams.net/
+- Create an architecture diargram for aws services setup. Follow below assignments:
+	1. Create a architecture diagram for bastion host setup to access RDS instance from private EC2 instance.
+	2. Create a architecture diagram for CICD using AWS
+	3. Create a architecture diagram for CICD using Jenkins
+
+CICD:
+1) IAC Setup can be manual (if resource creation is to be replicated across region, across account )
+
+CloudFormation -> ec2.yml -> CF -> API Call to EC2 service in your AWS Account -> Creates a EC2 instance.
+Terraform -> ec2.tf -> terraform -> API Call to EC2 service in your AWS Account -> Creates a EC2 instance.
+
+1a) IAC automation ( Infrastruction ) -> Resource or infra config changes
+	- CodeCommit/Github > Codebuild ( IAM Role ( CF, Services ) -> buildspec.yml -> script -> cf deploy for stack creation
+	- CodeCommit/Github > Jenkins ( IAM Role ( CF, Services ) -> Jenkinsfile -> script -> cf deploy for stack creation
+- VPC, EC2, S3.
+
+1b) IAC automation ( Infrastruction ) -> Resource or infra config changes
+	- CodeCommit/Github > Codebuild ( IAM Role ( Terraform, Services ) -> buildspec.yml -> script -> terraform apply for resource creation
+	- CodeCommit/Github > Jenkins ( IAM Role ( Terraform, Services ) -> Jenkinsfile -> script -> terraform for resource creation
+- VPC, EC2, S3.
+
+
+2) Application deployment ( Code change in application side ) -> UI, Program logic
+	- CodeCommit/Github > Codebuild ( build and package artifact ) -> buildspec.yml -> CodeDeploy ( Deploy the artifacts ) -> Servers
+	- CodeCommit/Github > Jenkins ( build and package artifact ) -> Jenkinsfile -> ( Deploy the artifacts )  -> Servers
+
+Jenkins
+AWS CICD 
+
+2/3 out of 10 interviews -> share your screen ( 2021 )
+3/4 out of 10 interviews -> share your screen ( 2022 )
+Chances of offline interviews possible -> ( 2022 )
+
+Share Screen scenarios:
+- Python code for lambda , shell script ( aws cli and filter options), CF templates, Terraform code.
+- Linux Text Processing scenarios can be asked.
+
+Approach:
+- Take the official documentation reference during the implementation.
+
+Mock L2
+Linux , DevOps and AWS
+1. Git scenarios : branching, merging strategy, git conflict, Pull Requests (Review and Approval Process, Merge Options in PR ( Fast Forwared Merge, Squash and Merge ) ) , git best practices ( delete child branch after it is merged ), ssh and https authentication, branch access policies.
+- Github Organization-> Repository
+	- added as a member in Organization.
+	- Access the repostories in the organization.
+
+2a. Cloudformation Scenarios and Implementation ( template, Sections, Intrinsic Functions, Output, export, import, order of creation/deletion of stacks, Drift Detection, automate drift detection notifications (python boto3, shell script)), cf cli deploy.
+2b. Terraform Scenarios and Implementatio ( TF File, resources, provider , variable ) -> terraform init, plan, apply -> provision.
+
+3a. IAC Automation : Git ( Github/CodeCommit) -> Codebuild ( buildspec.yml ) -> CF -> Deploy stacks as per SDLC environment
+3b. IAC Automation : Git ( Github/CodeCommit) -> Codebuild ( buildspec.yml ) -> Terraform -> Deploy Resources as per SDLC environment
+Continuos Integration Approach for Resource creation.
+
+4. Devops Workflow (Code to Deployment : Git ( Github/CodeCommit ) -> Build service ( CodeBuild/Jenkins ) -> deployment( CodeDeploy/Jenkins ) -> Servers)
+	a. Continuous Deployment Pipeline ( all steps are automated )
+	b. Continuous Delivery Pipeline ( manual approval step )
+
+5a. Explain AWS CICD implementation ( CodeCommit, CodeBuild, CodeDeploy, CodePipeline )
+	- only code from master/main branch should be deployed into prod environment.
+	- Code in main/master branch is made available only through PR Review and Approval Process.
+	- CodePipeline Trigger ( CloudWatch Event Trigger - When there is commit added in main/master branch, target aws resource i.e codepipeline will be started )
+5b. Explain Jenkins CICD Implementation.
+	- Jenkins Build and Execution.
+	- Freestyle Job, Pipeline Jobs ( Jenkinsfile ( stored in git ) )
+	- Github Webhook Trigger ( Code change in Github should trigger Pipeline Jenkins automatically )
+6. Linux Operations
+	- yum install, remove, dependencies, localinstall ( Redhat Distros ( .rpm files ) - yum , Debian Distros ( Ubuntu ) ( .deb files , apt-get ) , Windows ( .exe ) )
+	- networking, /etc/fstab, create/remove users, Text processing ( sed, awk, grep, uniq etc )
+	- Firewalld configuration scenarios, Network config changes ( /etc/hosts ), SG, NACL
+6a. Shell scripting scenarios ( bash scripts, awk, sed, for, if else, case, aws cli scenarios with jmespath )
+	- sg inbound rules example
+	- drift detection
+6b. Python Scripting ( python , boto3 on ec2, s3, sns, Lambda boto3 examples )
+	- you can search aws boto3 documentation for knowing what functions/methods to call.
+7. Configuration Management using ansible.
+	- Installation and configuration ( ansible.cfg, inventory, setup passwordless ssh ), ad-hoc commands, playbooks, variables, roles.
+11. Devops Best Practices that are followed.
+	Using Env Variables, parameters to make code generic, no storing sensitive information in code.
+	Code reusability.
+	Pass environment variables, or arguments to the program during runtime.
+		Shell -> SDLC_ENV=dev
+				 echo 'echo $SDLC_ENV'
+		Python -> import os
+				  os.environ['SDLC_ENV']
+
+Generic Questions:
+- What is the thing that you were doing manually and you wrote a script ( Shell/Python) to automate the same.
+	- automate drift detection notifications (python boto3 lambda, shell script)
+	- sg inbound rules example
+		- csv file ( 184.56.34.86,80 )
+			184.56.34.86,8080
+			184.56.33.86,8080
+
+AWS Troubleshooting:
+	- Load balancer : route ec2 -> retry the connection , every 5 sec, 5 times, unhealthy
+	- Troubleshooting of LB and EC2 instance network.
+- Cloudwatch custom metrics agent, cloudwatch agent will be installed on your EC2, linux logs to be pushed in cloudwatch logs in the log group.
+	▪ How to configure custom cloudwatch metrics ( cw daemon, script that will post logs from ec2 to log group )
+	- nginx , httpd => /var/log/nginx/access.log
+						/var/log/nginx/error.log
+						/var/log/httpd/access.log
+						/var/log/httpd/error.log
+				- cat access.log | grep '10.10*' | wc -l
+	▪ I want to monitor OS metrics (memory utilization ) and performance counters of my amazon linux instance.
+
+Linux :
+	sed, awk utilities
+	How to use command line arguments in a Script? $1 $2 $3 -> bash test.sh 10 40 38
+	How to check if my previously executed command was successful? $?
+	What is Shell Redirection Operators? > >>
+	What is crontab in Linux, how to set a cronjob? https://crontab.guru/
+	How to Debug a Shell Script? bash -x script.sh
+	How to find all the files modified in the last 5 days and save the result in a text file? ( find command , ctime , mtime , atime for files)
+	I want to install a package and is failing, what are the troubleshooting steps that you will follow
+	which port curl command connects, and on which port u get the response curl https -> 443 , http : 80 
+	ping icmp -> checking network
+	How to kill process ( pidof telnet, kill proccessid, check load on server ( top, free -h, -g ), netstat, nslookup, nmap, nc commands, one server talking server without ssh.
+	What all things ssh needs for authentication ( public key , private key, authorized_keys)
+	▪ List of open ports?
+	▪ What does nslookup and netstat?
+	▪ What is process? How to kill process? How to get PID? ( pidof sshd, sudo kill PID )
+	▪ What is the use of du command? disk usage
+
+	- Command to find all files in a directory with more than 1GB
+	- get the size of all files and folders in a particular directory
+	- list the files that are modified in the last 3 days.
+	- check process run by a particular user ( ps -elf )
+	- how to check cpu utilization and memory utilization in linux ( free -m , top )
+	- zip files in linux older than 1 month.
+	▪ Write the shellscript for count of IP Address from file?
+	▪ How to access EC2 instance, if pem file is lost?
+	- what types of error codes find if you enable ELB LOGS, What is meaning of what error code, 
+	- What is 2xx ? What is 3xx? what is 4xx? What is 5xx?
+		200 OK - Success
+		300 - Redirection Messages
+		400 - Client Error Messages
+			- 403 Forbidden
+			- 404 Not Found
+			- Request Timed Out
+		500 - Server Error Messages
+
+Github/CodeCommit:
+	Dockerfile: Commands to create image
+	buildspec.yml
+	appspec.yml
+	templates/ec2.yml
+	terraform/ec2.tf
+	scripts/ec2_create.sh
+	scripts/aws_cli.sh
+	scripts/image_build_push.sh
+	jenkins/Jenkinsfiles
+	lambda/ec2_alerts.py
+	lambda/list_unused_eips.py
+	nginx-deployment.yaml ( K8s manifest file)
+
+child_branch_1 -> dev
+develop -> qa
+main -> prod
+
+IAC: Infrastructure as a Code
+	AWS:
+		- CloudFormation ( CF Template ( .yml, .json ) ) ( template.yml , template.json ) -> AWS Account > Region ( resource provisioning definition )
+		( Sections, Intrinsic Functions, Output, export, import, Drift Detection, automate drift detection)
+	Hashicorp 
+		- Terraform ( HashiCorp , .tf files ) ( AWS , Azure , GCP ) (  template.tf ) -> ( resource provisioning definition )
+	Azure:
+		- Azure Resource Manager ( ARM templates ) - Azure resources
+
+IAC Automation:
+	- Github -> Codebuild -> CF -> Deploy
+		Network stack
+		IAM Stack
+		EC2 Stack
+		RDS Stack
+	- Github -> Codebuild -> TF -> Deploy
+
+Application Deployment Automation
+▪ AWS CICD Pipeline
+▪ Jenkins 
+
+Scripting:
+	- Shell Script ( bash scripts, awk, sed, for, if else, aws cli commands and filter)
+		shell script -> csv file sg inbound: filename, region, security group name
+		shell script -> automation of drift detection
+			Command Line Arguments: $1, $2, $3
+	- Python Script ( list, dictionary, tuple, for, functions, modules, boto3 -> aws sdk, ) Lambda 
+		Python script using Boto3
+		1)Write python script for send an email notification When a specific Instance(s) stops in the production environment
+		2)Write Python script to find unused volume and send an email notification
+		3)Write python script to find unused EIPs
+		4)How to automatically tag EC2 instance after its launched and if its not tagged?
+		(Ans:  create cloudwatch event pattern using API Call via CloudTrail and trigger lambda function, write python code for creating tag in the lambda function)
+
+Logging:
+	Query S3 Bucket Files -> Athena
+		VPC Flow Logs -> S3 bucket
+			- Find all deny ip address in VPC logs in last 30 days.
+			https://docs.aws.amazon.com/athena/latest/ug/vpc-flow-logs.html
+		CloudTrail Logs -> S3 bucket
+			- Find who deleted an S3 bucket in last 30 days.
+		ELB Logs -> S3 bucket
+		S3 Access logs -> S3 bucket
+		
+Ansible/Chef/Puppet
+Ansible
+- Ansible ad-hoc commands -> used this modules into ansible playbooks
+▪ What is Inventory and where the inventory file?
+▪ What is Ansible Role, role directory structure.
+▪ What is Module?
+▪ What happens when you run a module in ansible?
+▪ Using Ansible, if any application is installed, how to check and troubleshoot the installation/configuration of that application.
+▪ How to define inventory in Ansible
+▪ parameters in ansible.cfg
+▪ Ansible configuration file precedence.
+▪ Ansible variable precedence.
+▪ Ansible execution logging
+▪ How does ansible ssh authentication work. ( private key on control node, public keys on managed node )
+
+Docker:
+	- Docker build, run, pull, commit
+	- Creating images, pushing the images to container Registry ( Docker hub, ECR )
+	▪ Docker Image Build Pipeline:
+		- Using AWS CI services: Github/CodeCommit -> CodeBuild ( buildspec.yml -> Run build_image_push.sh IMAGENAME) -> Pushed to Docker hub, ECR. ( CodeBuild Docker Image Pipeline ), image versions to be handled. ( CODEBUILD_BUILD_NUMBER )
+		- Using Jenkins Job: Docker hub, ECR. ( Jenkinsfile Docker Image Pipeline ), Jenkinsfile -> Run build_image_push.sh IMAGENAME -> Pushed to Docker hub, ECR. image versions to be handled. ( BUILD_NUMBER )
+	▪ Dockerfile?
+		Instructions in the dockerfile
+	▪ Can we use two FROM in Dockerfile?
+	▪ Docker Volumes ( bind volume ( mount host directory on docker container path ( -v ), docker volume ( docker volume create, -mount )
+	▪ Docker File instructions
+		EXPOSE 8080 -> docker run -p 80:8080
+	
+Kubernetes:
+	- Architecture of kubernetes 
+	- Master, worker, controller manager, etcd, kubelet, scheduler manager, pods, replica set, rollout deployment,rollback deployment, updates deployments, writing manifest files.
+	Kubernetes
+	- POC to create EKS cluster, working on above K8s objects.
+		Master Node ( managed controlplane ), NodeGroup, Api Server Endpoint, kubectl commands
+		kubect run --image=k8s.gcr/
+		kubectl create deployments -f deployment.yaml
+		kubectl get pods -o wide
+		kubectl get nodes
+		kubectl get rs
+		kubectl describe pod PODNAME
+		kubectl describe pod DESPLOYMENT_NAME
